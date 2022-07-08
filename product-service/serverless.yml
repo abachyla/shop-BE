@@ -1,0 +1,52 @@
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+
+service: product-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: false
+    packager: 'npm'
+    excludeFiles: /**/*.test.js
+
+package:
+  individually: true
+
+functions:
+  getProducts:
+    handler: handlers/getProductsList.getProductsList
+    events:
+      - httpApi:
+          path: /products
+          method: get
+  getProductById:
+    handler: handlers/getProductsById.getProductsById
+    events:
+      - httpApi:
+          path: /products/{productId}
+          method: get
+
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"

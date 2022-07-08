@@ -1,0 +1,18 @@
+{
+  "name": "product-service",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "babel-loader": "^8.2.5",
+    "serverless-webpack": "^5.7.1",
+    "webpack": "^5.73.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "sls deploy"
+  },
+  "author": "",
+  "license": "ISC"
+}
