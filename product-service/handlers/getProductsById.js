@@ -8,19 +8,19 @@ const getProduct = (productId) => new Promise((resolve, reject) => {
     } else {
         reject({
             statusCode: 404,
-            message: "Product is not found",
+            message: 'Product is not found',
         });
     }
 })
 
 export const getProductsById = async (event = {}) => {
-    let response = {};
+    let response;
 
     try {
         const id = event.pathParameters && event.pathParameters.productId;
 
         if (!id) {
-            throw {statusCode: 500, message: 'id is not provided'}
+            throw {statusCode: 500, message: 'Id is not provided'}
         }
 
         const product = await getProduct(id);
@@ -30,7 +30,7 @@ export const getProductsById = async (event = {}) => {
             body: JSON.stringify(product),
         }
     } catch (error) {
-        response = error || {
+        response = error.statusCode ? error : {
             statusCode: 500,
             message: 'Something went wrong'
         };

@@ -9,8 +9,5 @@
         }
       }
     ]
-  ],
-  "plugins": [
-    "source-map-support"
   ]
 }
