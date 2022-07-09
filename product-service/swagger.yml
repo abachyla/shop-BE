@@ -1,0 +1,116 @@
+openapi: 3.0.0
+components:
+  schemas:
+    Product:
+      type: object
+      description: Product.
+      properties:
+        id:
+          type: string
+          description: Product ID.
+        title:
+          type: string
+          description: Product title.
+        description:
+          type: string
+          description: Product description.
+        price:
+          type: number
+          description: Product price.
+          minimum: 0
+        count:
+          type: integer
+          description: Product count.
+          minimum: 0
+    Error:
+      type: object
+      description: Error.
+      properties:
+        message:
+          type: string
+          description: Error message.
+        status:
+          type: integer
+          description: An application-specific error code.
+info:
+  title: Product Service API
+  description: This is Product Service API
+  version: '1'
+paths:
+  /products:
+    get:
+      operationId: getProductsList
+      summary: Get all products.
+      description: Returns the list of all products.
+      responses:
+        '200':
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+              example:
+                - id: '1'
+                  title: 'Product 1'
+                  description: 'Product description 1'
+                  price: 2.5
+                  count: 42
+                - id: '2'
+                  title: 'Product 2'
+                  description: 'Product description 2'
+                  price: 50
+                  count: 3
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Something went wrong.
+  /products/{productId}:
+    get:
+      operationId: getProductsById
+      summary: Get a product by ID.
+      description: Returns a product by ID.
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID.
+          required: true
+          schema:
+            type: 'string'
+      responses:
+        '200':
+          description: Product info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: '1'
+                title: 'Product 1'
+                description: 'Product description 1'
+                price: 2.5
+                count: 42
+        '404':
+          description: Product is not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: Product is not found.
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Something went wrong.
