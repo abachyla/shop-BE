@@ -1,4 +1,5 @@
 import {getProductsList} from './getProductsList';
+import {RESPONSE_STATUSES} from "../constants/response";
 
 const products = [{
     count: 5,
@@ -27,14 +28,12 @@ describe('getProductsList', () => {
     });
 
     it('should return 500 error if any errors', async () => {
-        const response = {
-            statusCode: 500,
-            message: 'Something went wrong',
-        };
         JSON.stringify = jest.fn().mockImplementationOnce(() => {
             throw new Error()
         });
 
-        expect(await getProductsList()).toEqual(response);
+        const response = await getProductsList();
+
+        expect(response.statusCode).toBe(RESPONSE_STATUSES.SERVER_ERROR);
     });
 });

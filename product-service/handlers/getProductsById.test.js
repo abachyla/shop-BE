@@ -1,4 +1,7 @@
 import {getProductsById} from './getProductsById';
+import {ERROR_TYPES, ERRORS} from "../constants/error";
+import {RESPONSE_STATUSES} from "../constants/response";
+
 
 const products = [{
     count: 5,
@@ -31,8 +34,8 @@ describe('getProductsById', () => {
 
     it('should return 404 error if product is not found by id', async () => {
         const response = {
-            statusCode: 404,
-            message: 'Product is not found',
+            statusCode: RESPONSE_STATUSES.NOT_FOUND,
+            body: JSON.stringify(ERRORS[ERROR_TYPES.NOT_FOUND]),
         };
         event.pathParameters.productId = '2';
 
@@ -41,8 +44,8 @@ describe('getProductsById', () => {
 
     it('should return 500 error if id is not provided', async () => {
         const response = {
-            statusCode: 500,
-            message: 'Id is not provided',
+            statusCode: RESPONSE_STATUSES.SERVER_ERROR,
+            body: JSON.stringify(ERRORS[ERROR_TYPES.NO_ID]),
         };
 
         expect(await getProductsById(event)).toEqual(response);
@@ -50,23 +53,21 @@ describe('getProductsById', () => {
 
     it('should return 500 error if event is not provided', async () => {
         const response = {
-            statusCode: 500,
-            message: 'Id is not provided',
+            statusCode: RESPONSE_STATUSES.SERVER_ERROR,
+            body: JSON.stringify(ERRORS[ERROR_TYPES.NO_ID]),
         };
 
         expect(await getProductsById()).toEqual(response);
     });
 
     it('should return 500 error if any errors', async () => {
-        const response = {
-            statusCode: 500,
-            message: 'Something went wrong',
-        };
         event.pathParameters.productId = '1';
         JSON.stringify = jest.fn().mockImplementationOnce(() => {
-            throw new Error()
+            throw new Error();
         });
 
-        expect(await getProductsById(event)).toEqual(response);
+        const response = await getProductsById(event);
+
+        expect(response.statusCode).toBe(RESPONSE_STATUSES.SERVER_ERROR);
     });
 });

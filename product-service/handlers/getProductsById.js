@@ -1,38 +1,39 @@
 import products from '../mocks/products.json';
+import {ERRORS, ERROR_TYPES} from '../constants/error';
+import {RESPONSE_STATUSES} from "../constants/response";
 
-const getProduct = (productId) => new Promise((resolve, reject) => {
-    const product = products.find((item) => item.id === productId);
+
+const getProduct = (id = '') => new Promise((resolve, reject) => {
+    if (!id) {
+        reject(ERROR_TYPES.NO_ID);
+    }
+
+    const product = products.find((item) => item.id === id);
 
     if (product) {
         resolve(product);
     } else {
-        reject({
-            statusCode: 404,
-            message: 'Product is not found',
-        });
+        reject(ERROR_TYPES.NOT_FOUND);
     }
-})
+});
 
 export const getProductsById = async (event = {}) => {
     let response;
 
     try {
         const id = event.pathParameters && event.pathParameters.productId;
-
-        if (!id) {
-            throw {statusCode: 500, message: 'Id is not provided'}
-        }
-
         const product = await getProduct(id);
 
         response = {
-            statusCode: 200,
+            statusCode: RESPONSE_STATUSES.OK,
             body: JSON.stringify(product),
-        }
-    } catch (error) {
-        response = error.statusCode ? error : {
-            statusCode: 500,
-            message: 'Something went wrong'
+        };
+    } catch (err) {
+        const error = ERRORS[err] || ERRORS[ERROR_TYPES.DEFAULT];
+
+        response = {
+            statusCode: error.code,
+            body: JSON.stringify(error),
         };
     }
 
