@@ -1,6 +1,6 @@
 import { getProductsById } from '../handlers/getProductsById';
 import { ERROR_TYPES, ERRORS } from '../constants/error';
-import { RESPONSE_STATUSES } from '../constants/response';
+import { RESPONSE_HEADERS, RESPONSE_STATUSES } from '../constants/response';
 
 const products = [{
   count: 5,
@@ -23,7 +23,8 @@ describe('getProductsById', () => {
 
   it('should return a product by id', async () => {
     const response = {
-      statusCode: 200,
+      headers: RESPONSE_HEADERS,
+      statusCode: RESPONSE_STATUSES.OK,
       body: JSON.stringify(products[0]),
     };
     event.pathParameters.productId = '1';
@@ -33,6 +34,7 @@ describe('getProductsById', () => {
 
   it('should return 404 error if product is not found by id', async () => {
     const response = {
+      headers: RESPONSE_HEADERS,
       statusCode: RESPONSE_STATUSES.NOT_FOUND,
       body: JSON.stringify(ERRORS[ERROR_TYPES.NOT_FOUND]),
     };
@@ -43,6 +45,7 @@ describe('getProductsById', () => {
 
   it('should return 500 error if id is not provided', async () => {
     const response = {
+      headers: RESPONSE_HEADERS,
       statusCode: RESPONSE_STATUSES.SERVER_ERROR,
       body: JSON.stringify(ERRORS[ERROR_TYPES.NO_ID]),
     };
@@ -52,6 +55,7 @@ describe('getProductsById', () => {
 
   it('should return 500 error if event is not provided', async () => {
     const response = {
+      headers: RESPONSE_HEADERS,
       statusCode: RESPONSE_STATUSES.SERVER_ERROR,
       body: JSON.stringify(ERRORS[ERROR_TYPES.NO_ID]),
     };

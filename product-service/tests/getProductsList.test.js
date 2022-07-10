@@ -1,5 +1,5 @@
 import { getProductsList } from '../handlers/getProductsList';
-import { RESPONSE_STATUSES } from '../constants/response';
+import { RESPONSE_HEADERS, RESPONSE_STATUSES } from '../constants/response';
 
 const products = [{
   count: 5,
@@ -20,7 +20,8 @@ jest.mock('../mocks/products.json', () => products);
 describe('getProductsList', () => {
   it('should return a list of products', async () => {
     const response = {
-      statusCode: 200,
+      headers: RESPONSE_HEADERS,
+      statusCode: RESPONSE_STATUSES.OK,
       body: JSON.stringify(products),
     };
 
