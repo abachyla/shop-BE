@@ -14,5 +14,6 @@ module.exports = {
   ignorePatterns: ['**/*.config.js'],
   rules: {
     'import/prefer-default-export': 'off',
+    'no-console': 'off',
   },
 };

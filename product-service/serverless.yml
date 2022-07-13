@@ -2,7 +2,7 @@
 #    docs.serverless.com
 #
 
-service: product-service
+service: product-service-4
 frameworkVersion: '3'
 
 provider:
@@ -12,6 +12,12 @@ provider:
   region: eu-west-1
   httpApi:
     cors: true
+  environment:
+    PG_HOST: rs-ab-shop-database.cig8azdsk1jk.eu-west-1.rds.amazonaws.com
+    PG_PORT: 5432
+    PG_DATABASE: abshop
+    PG_USERNAME: postgres748325
+    PG_PASSWORD: 1RO1znfFLiAwaDcXVVAb
 
 plugins:
   - serverless-webpack
@@ -19,7 +25,7 @@ plugins:
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'
-    includeModules: false
+    includeModules: true
     packager: 'npm'
     excludeFiles: /**/*.test.js
 
@@ -33,6 +39,12 @@ functions:
       - httpApi:
           path: /products
           method: get
+  createProduct:
+    handler: handlers/createProduct.createProduct
+    events:
+      - httpApi:
+          path: /products
+          method: post
   getProductById:
     handler: handlers/getProductsById.getProductsById
     events:

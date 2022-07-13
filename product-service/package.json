@@ -11,7 +11,8 @@
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.2",
     "serverless-webpack": "^5.7.1",
-    "webpack": "^5.73.0"
+    "webpack": "^5.73.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
     "deploy": "sls deploy",
@@ -20,5 +21,8 @@
     "lint:fix": "eslint . --ext .js --fix"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.7.3"
+  }
 }
