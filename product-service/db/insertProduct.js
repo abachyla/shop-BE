@@ -1,12 +1,7 @@
 import { createClient } from './client';
-import { LIST_OF_PRODUCTS } from '../constants/query';
 
-export const CREATE_PRODUCT = (product) => `BEGIN;
-      with product as (INSERT INTO products (title, description, price) VALUES ('${product.title}', '${product.description}', ${product.price}) returning *),
-      stock as (insert into stocks (product_id, count) select (select id from product), ${product.count} as count returning *)
-      ${LIST_OF_PRODUCTS}
-      COMMIT;
-      `;
+export const INSERT_PRODUCT_QUERY = 'INSERT INTO products (title, price, description) VALUES ($1, $2, $3) RETURNING id';
+export const INSERT_STOCK_QUERY = 'INSERT INTO stocks (product_id, count) VALUES ($1, $2)';
 
 export const insertProduct = async (product) => {
   let client;
@@ -14,9 +9,23 @@ export const insertProduct = async (product) => {
   try {
     client = await createClient();
 
-    const products = await client.query(CREATE_PRODUCT(product));
+    await client.query('BEGIN');
+    const result = await client.query(
+      INSERT_PRODUCT_QUERY,
+      [product.title, product.price, product.description || ''],
+    );
 
-    return products;
+    console.log('Create product result');
+    console.log(result);
+
+    const [entry] = result.rows;
+    await client.query(INSERT_STOCK_QUERY, [entry.id, product.count]);
+    await client.query('COMMIT');
+
+    return {
+      ...entry,
+      ...product,
+    };
   } finally {
     if (client) {
       client.end();

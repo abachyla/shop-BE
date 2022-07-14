@@ -13,11 +13,11 @@ provider:
   httpApi:
     cors: true
   environment:
-    PG_HOST: rs-ab-shop-database.cig8azdsk1jk.eu-west-1.rds.amazonaws.com
-    PG_PORT: 5432
-    PG_DATABASE: abshop
-    PG_USERNAME: postgres748325
-    PG_PASSWORD: 1RO1znfFLiAwaDcXVVAb
+    PG_HOST:
+    PG_PORT:
+    PG_DATABASE:
+    PG_USERNAME:
+    PG_PASSWORD:
 
 plugins:
   - serverless-webpack

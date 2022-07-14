@@ -10,7 +10,7 @@ create table products (
 create table stocks (
 	product_id uuid primary key,
   	count integer,
-    FOREIGN key (product_id) REFERENCES products(id)
+    FOREIGN key (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
 insert into products (title, description, price) values ('Product 1', 'Description 1', 120);

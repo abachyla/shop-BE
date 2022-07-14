@@ -17,12 +17,15 @@ export const getProductsList = async (event) => {
 
     response = getResponse(RESPONSE_STATUSES.OK, result.rows);
   } catch (err) {
-    console.log('Error');
     console.log(err);
 
     const error = ERRORS[ERROR_TYPES.DEFAULT];
+    const responseError = {
+      code: error.code,
+      message: (err || error).message,
+    };
 
-    response = getResponse(error.code, error);
+    response = getResponse(responseError.code, responseError);
   }
 
   return response;

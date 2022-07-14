@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "validate": "^5.2.0"
   }
 }

@@ -23,12 +23,14 @@ export const getProductsById = async (event = {}) => {
 
     response = getResponse(RESPONSE_STATUSES.OK, product);
   } catch (err) {
-    console.log('Error');
     console.log(err);
 
-    const error = ERRORS[err] || ERRORS[ERROR_TYPES.DEFAULT]; // !!!!!s
+    const responseError = {
+      code: (ERRORS[err && err.message] || ERRORS[ERROR_TYPES.DEFAULT]).code,
+      message: (ERRORS[err && err.message] || err || ERRORS[ERROR_TYPES.DEFAULT]).message,
+    };
 
-    response = getResponse(error.code, error);
+    response = getResponse(responseError.code, responseError);
   }
 
   return response;
