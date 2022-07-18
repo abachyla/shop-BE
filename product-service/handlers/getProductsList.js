@@ -20,12 +20,8 @@ export const getProductsList = async (event) => {
     console.log(err);
 
     const error = ERRORS[ERROR_TYPES.DEFAULT];
-    const responseError = {
-      code: error.code,
-      message: (err || error).message,
-    };
 
-    response = getResponse(responseError.code, responseError);
+    response = getResponse(error.code, error);
   }
 
   return response;

@@ -31,12 +31,9 @@ export const createProduct = async (event = {}) => {
   } catch (err) {
     console.log(err);
 
-    const responseError = {
-      code: (ERRORS[err && err.message] || ERRORS[ERROR_TYPES.DEFAULT]).code,
-      message: (ERRORS[err && err.message] || err || ERRORS[ERROR_TYPES.DEFAULT]).message,
-    };
+    const error = ERRORS[err && err.message] || ERRORS[ERROR_TYPES.DEFAULT];
 
-    response = getResponse(responseError.code, responseError);
+    response = getResponse(error.code, error);
   }
 
   return response;
