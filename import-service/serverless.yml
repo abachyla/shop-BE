@@ -1,0 +1,58 @@
+service: ab-shop-import-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: eu-west-1
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "s3:ListBucket"
+          Resource:
+            - arn:aws:s3:::${self:custom.bucket}
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+          Resource:
+            - arn:aws:s3:::${self:custom.bucket}/*
+
+
+custom:
+  bucket: rs-ab-shop-csv-5
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: 'npm'
+    excludeFiles: /**/*.test.js
+
+plugins:
+  - serverless-webpack
+
+package:
+  individually: true
+
+functions:
+  importProductsFile:
+    handler: handlers/importProductsFile.importProductsFile
+    events:
+      - http:
+          path: /import
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: handlers/importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: ${self:custom.bucket}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
