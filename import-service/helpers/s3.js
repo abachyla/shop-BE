@@ -1,8 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import csvParser from 'csv-parser';
 
-const BUCKET = 'rs-ab-shop-csv-5';
-const { AWS_REGION } = process.env;
+const { AWS_REGION, BUCKET } = process.env;
 const s3 = new S3({ region: AWS_REGION });
 const EXPIRATION_TIME = 60;
 

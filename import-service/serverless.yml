@@ -7,6 +7,8 @@ provider:
   runtime: nodejs16.x
   stage: dev
   region: eu-west-1
+  environment:
+    BUCKET: ${self:custom.bucket}
   iam:
     role:
       statements:
