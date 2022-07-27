@@ -2,7 +2,7 @@
 #    docs.serverless.com
 #
 
-service: product-service-4
+service: product-service-6
 frameworkVersion: '3'
 
 plugins:
@@ -26,6 +26,7 @@ provider:
     PG_PASSWORD: ${env:PG_PASSWORD}
 
 custom:
+  sqsQueueName: ab-shop-products-queue
   webpack:
     webpackConfig: 'webpack.config.js'
     includeModules: true
@@ -54,3 +55,22 @@ functions:
       - httpApi:
           path: /products/{productId}
           method: get
+  catalogBatchProcess:
+    handler: handlers/catalogBatchProcess.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            - "${cf:ab-shop-import-service-${self:provider.stage}.SQSQueueArn}"
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"

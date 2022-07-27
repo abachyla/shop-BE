@@ -1,8 +1,9 @@
-import S3 from 'aws-sdk/clients/s3';
+import AWS from 'aws-sdk';
 import csvParser from 'csv-parser';
 
-const { AWS_REGION, BUCKET } = process.env;
-const s3 = new S3({ region: AWS_REGION });
+const { AWS_REGION, BUCKET, SQS_QUEUE_URL } = process.env;
+const s3 = new AWS.S3({ region: AWS_REGION });
+const sqs = new AWS.SQS();
 const EXPIRATION_TIME = 60;
 
 const deleteObject = async (key) => {
@@ -60,9 +61,23 @@ export const importFile = (record) => {
         reject(error);
       })
       .pipe(csvParser())
-      .on('data', (data) => {
+      .on('data', async (data) => {
         console.log('Parsed data');
         console.log(data);
+
+        try {
+          const response = await sqs.sendMessage({
+            MessageBody: JSON.stringify(data),
+            QueueUrl: SQS_QUEUE_URL,
+          });
+
+          console.log('Send message to queue');
+          console.log(response);
+
+        } catch (error) {
+          console.log('Message to queue was not sent');
+          console.log(error);
+        }
       })
       .on('end', async () => {
         const newKey = key.replace('uploaded', 'parsed');
