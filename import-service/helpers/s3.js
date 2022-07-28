@@ -3,7 +3,7 @@ import csvParser from 'csv-parser';
 
 const { AWS_REGION, BUCKET, SQS_QUEUE_URL } = process.env;
 const s3 = new AWS.S3({ region: AWS_REGION });
-const sqs = new AWS.SQS();
+const sqs = new AWS.SQS({ region: AWS_REGION });
 const EXPIRATION_TIME = 60;
 
 const deleteObject = async (key) => {
@@ -61,19 +61,24 @@ export const importFile = (record) => {
         reject(error);
       })
       .pipe(csvParser())
-      .on('data', async (data) => {
+      .on('data',  (data) => {
         console.log('Parsed data');
         console.log(data);
 
         try {
-          const response = await sqs.sendMessage({
+          sqs.sendMessage({
             MessageBody: JSON.stringify(data),
             QueueUrl: SQS_QUEUE_URL,
+          }, (err) => {
+            if (err) {
+              console.log('Message to queue was not sent');
+              console.log(err);
+
+              return;
+            }
+
+            console.log('Send message to queue');
           });
-
-          console.log('Send message to queue');
-          console.log(response);
-
         } catch (error) {
           console.log('Message to queue was not sent');
           console.log(error);

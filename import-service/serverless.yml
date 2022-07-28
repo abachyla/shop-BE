@@ -9,25 +9,24 @@ provider:
   region: eu-west-1
   environment:
     BUCKET: ${self:custom.bucket}
-    SQS_URL:
-      Ref: SQSQueue
+    SQS_QUEUE_URL: !ImportValue SQSUrl
   iam:
     role:
       statements:
-        - Effect: "Allow"
+        - Effect: Allow
           Action: "s3:ListBucket"
           Resource:
             - arn:aws:s3:::${self:custom.bucket}
-        - Effect: "Allow"
+        - Effect: Allow
           Action:
             - "s3:*"
           Resource:
             - arn:aws:s3:::${self:custom.bucket}/*
-        - Effect: "Allow"
+        - Effect: Allow
           Action:
             - "sqs:*"
           Resource:
-            - !GetAtt SQSQueue.Arn
+            - !ImportValue SQSQueueArn
 
 
 custom:
@@ -65,16 +64,3 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-
-resources:
-  Resources:
-    SQSQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ab-shop-products-queue
-  Outputs:
-    SQSQueueUrl:
-      Value:
-        Ref: SQSQueue
-    SQSQueueArn:
-      Value: !GetAtt SQSQueue.Arn
