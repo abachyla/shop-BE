@@ -77,20 +77,7 @@ describe('getProductsById', () => {
     expect(await getProductsById()).toEqual(expectedResponse);
   });
 
-  it('should return 500 error with thrown message if error message exists', async () => {
-    const message = 'Connect error';
-    const expectedResponse = {
-      headers: RESPONSE_HEADERS,
-      statusCode: RESPONSE_STATUSES.SERVER_ERROR,
-      body: JSON.stringify({ code: RESPONSE_STATUSES.SERVER_ERROR, message }),
-    };
-    jest.spyOn(Client(), 'connect').mockImplementation(() => Promise.reject(new Error(message)));
-    event.pathParameters.productId = '1';
-
-    expect(await getProductsById(event)).toEqual(expectedResponse);
-  });
-
-  it('should return 500 error with default message if error message does not exist', async () => {
+  it('should return 500 error with default message if an error was thrown', async () => {
     const expectedResponse = {
       headers: RESPONSE_HEADERS,
       statusCode: RESPONSE_STATUSES.SERVER_ERROR,

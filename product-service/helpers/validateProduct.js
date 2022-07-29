@@ -11,10 +11,16 @@ const productSchema = new Schema({
   price: {
     type: Number,
     required: true,
+    use: {
+      min: (val) => val > 0,
+    },
   },
   count: {
     type: Number,
     required: true,
+    use: {
+      min: (val) => val > 0,
+    },
   },
 });
 

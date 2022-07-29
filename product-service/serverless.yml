@@ -5,6 +5,12 @@
 service: product-service-4
 frameworkVersion: '3'
 
+plugins:
+  - serverless-webpack
+  - serverless-dotenv-plugin
+
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -13,14 +19,11 @@ provider:
   httpApi:
     cors: true
   environment:
-    PG_HOST:
-    PG_PORT:
-    PG_DATABASE:
-    PG_USERNAME:
-    PG_PASSWORD:
-
-plugins:
-  - serverless-webpack
+    PG_HOST: ${env:PG_HOST}
+    PG_PORT: ${env:PG_PORT}
+    PG_DATABASE: ${env:PG_DATABASE}
+    PG_USERNAME: ${env:PG_USERNAME}
+    PG_PASSWORD: ${env:PG_PASSWORD}
 
 custom:
   webpack:
@@ -51,16 +54,3 @@ functions:
       - httpApi:
           path: /products/{productId}
           method: get
-
-
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"

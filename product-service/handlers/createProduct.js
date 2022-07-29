@@ -27,7 +27,7 @@ export const createProduct = async (event = {}) => {
     console.log('Result');
     console.log(product);
 
-    response = getResponse(RESPONSE_STATUSES.OK, product);
+    response = getResponse(RESPONSE_STATUSES.CREATED, product);
   } catch (err) {
     console.log(err);
 
