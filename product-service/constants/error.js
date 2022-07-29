@@ -5,6 +5,7 @@ export const ERROR_TYPES = {
   DEFAULT: 'DEFAULT',
   NO_ID: 'NO_ID',
   PRODUCT_VALIDATION: 'PRODUCT_VALIDATION',
+  NO_RECORDS: 'NO_RECORDS',
 };
 
 export const ERRORS = {
@@ -19,6 +20,10 @@ export const ERRORS = {
   [ERROR_TYPES.NO_ID]: {
     code: RESPONSE_STATUSES.SERVER_ERROR,
     message: 'Product ID is not provided.',
+  },
+  [ERROR_TYPES.NO_RECORDS]: {
+    code: RESPONSE_STATUSES.SERVER_ERROR,
+    message: 'There are no items to add.'
   },
   [ERROR_TYPES.PRODUCT_VALIDATION]: {
     code: RESPONSE_STATUSES.BAD_REQUEST,

@@ -31,6 +31,11 @@ provider:
           Action:
             - "sqs:*"
           Resource: !GetAtt SQSQueue.Arn
+        - Effect: Allow
+          Action:
+            - 'sns:*'
+          Resource:
+            Ref: SNSTopic
 
 custom:
   webpack:
@@ -74,6 +79,27 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: catalogItemsQueue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${env:SNS_EMAIL}
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+    SNSCustomSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: '${env:SNS_EMAIL_2}'
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          bigPrice:
+            - true
   Outputs:
     SQSUrl:
       Value:
@@ -84,3 +110,13 @@ resources:
       Value: !GetAtt SQSQueue.Arn
       Export:
         Name: SQSQueueArn
+    SNSTopic:
+      Value:
+        Ref: SNSTopic
+      Export:
+        Name: SNSTopic
+    SNSSubscription:
+      Value:
+        Ref: SNSSubscription
+      Export:
+        Name: SNSSubscription

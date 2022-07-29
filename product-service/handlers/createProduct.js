@@ -11,18 +11,7 @@ export const createProduct = async (event = {}) => {
   console.log(event);
 
   try {
-    const { body = '' } = event;
-    const data = JSON.parse(body);
-
-    const errors = validateProduct(data);
-    if (errors) {
-      console.log('Product validation error');
-      console.log(errors);
-
-      throw new Error(ERROR_TYPES.PRODUCT_VALIDATION);
-    }
-
-    const product = await insertProduct(data);
+    const product = await insertProduct(event);
 
     console.log('Result');
     console.log(product);
