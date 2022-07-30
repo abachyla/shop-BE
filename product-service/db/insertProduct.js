@@ -1,6 +1,6 @@
 import { createClient } from './client';
-import {validateProduct} from "../helpers/validateProduct";
-import {ERROR_TYPES} from "../constants/error";
+import { validateProduct } from '../helpers/validateProduct';
+import { ERROR_TYPES } from '../constants/error';
 
 export const INSERT_PRODUCT_QUERY = 'INSERT INTO products (title, price, description) VALUES ($1, $2, $3) RETURNING id';
 export const INSERT_STOCK_QUERY = 'INSERT INTO stocks (product_id, count) VALUES ($1, $2)';
@@ -9,7 +9,7 @@ export const insertProduct = async (record) => {
   let client;
 
   try {
-    const { body = '' } = record;
+    const { body = {} } = record;
     const product = JSON.parse(body);
 
     const errors = validateProduct(product);

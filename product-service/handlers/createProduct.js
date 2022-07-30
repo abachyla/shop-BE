@@ -2,7 +2,6 @@ import { ERRORS, ERROR_TYPES } from '../constants/error';
 import { RESPONSE_STATUSES } from '../constants/response';
 import { getResponse } from '../helpers/response';
 import { insertProduct } from '../db/insertProduct';
-import { validateProduct } from '../helpers/validateProduct';
 
 export const createProduct = async (event = {}) => {
   let response;

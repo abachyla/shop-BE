@@ -5,6 +5,7 @@ const { AWS_REGION, BUCKET, SQS_QUEUE_URL } = process.env;
 const s3 = new AWS.S3({ region: AWS_REGION });
 const sqs = new AWS.SQS({ region: AWS_REGION });
 const EXPIRATION_TIME = 60;
+const NUMBER_COLUMNS = ['price', 'count'];
 
 const deleteObject = async (key) => {
   await s3.deleteObject({
@@ -60,8 +61,14 @@ export const importFile = (record) => {
 
         reject(error);
       })
-      .pipe(csvParser())
-      .on('data',  (data) => {
+      .pipe(csvParser({
+        mapValues: (({header, index, value}) => {
+          const isNumber = NUMBER_COLUMNS.some(item => item === header);
+
+          return isNumber ? Number(value) : value;
+        })
+      }))
+      .on('data', (data) => {
         console.log('Parsed data');
         console.log(data);
 

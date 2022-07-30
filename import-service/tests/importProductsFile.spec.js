@@ -1,15 +1,19 @@
-import S3 from 'aws-sdk/clients/s3';
+import AWS from 'aws-sdk';
 import { importProductsFile } from '../handlers/importProductsFile';
 import { RESPONSE_HEADERS, RESPONSE_STATUSES } from '../constants/response';
 import { ERROR_TYPES, ERRORS } from '../constants/error';
 
 /* aws-sdk-mock was not used due the issue https://github.com/dwyl/aws-sdk-mock/issues/197 */
-jest.mock('aws-sdk/clients/s3', () => {
-  class MockedS3 {
-    getSignedUrlPromise() {}
-  }
+jest.mock('aws-sdk', () => {
+  const mockedS3 = {
+    getSignedUrlPromise: jest.fn(),
+  };
+  const mockedSQS = {};
 
-  return MockedS3;
+  return {
+    S3: jest.fn(() => mockedS3),
+    SQS: jest.fn(() => mockedSQS),
+  };
 });
 
 describe('importProductsFile', () => {
@@ -30,7 +34,7 @@ describe('importProductsFile', () => {
       headers: RESPONSE_HEADERS,
       body: JSON.stringify(url),
     };
-    jest.spyOn(S3.prototype, 'getSignedUrlPromise').mockImplementation(() => Promise.resolve(url));
+    jest.spyOn(AWS.S3(), 'getSignedUrlPromise').mockImplementation(() => Promise.resolve(url));
 
     expect(await importProductsFile(event)).toEqual(expectedResponse);
   });
@@ -41,7 +45,7 @@ describe('importProductsFile', () => {
       headers: RESPONSE_HEADERS,
       body: JSON.stringify(ERRORS[ERROR_TYPES.DEFAULT]),
     };
-    jest.spyOn(S3.prototype, 'getSignedUrlPromise').mockImplementation(() => Promise.reject(new Error('Error')));
+    jest.spyOn(AWS.S3(), 'getSignedUrlPromise').mockImplementation(() => Promise.reject(new Error('Error')));
 
     expect(await importProductsFile(event)).toEqual(expectedResponse);
   });

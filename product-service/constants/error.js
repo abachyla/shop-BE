@@ -23,7 +23,7 @@ export const ERRORS = {
   },
   [ERROR_TYPES.NO_RECORDS]: {
     code: RESPONSE_STATUSES.SERVER_ERROR,
-    message: 'There are no items to add.'
+    message: 'There are no items to add.',
   },
   [ERROR_TYPES.PRODUCT_VALIDATION]: {
     code: RESPONSE_STATUSES.BAD_REQUEST,
