@@ -1,20 +1,24 @@
-import products from '../mocks/products.json';
 import { ERRORS, ERROR_TYPES } from '../constants/error';
 import { RESPONSE_STATUSES } from '../constants/response';
 import { getResponse } from '../helpers/response';
+import { getAllProducts } from '../db/getAllProducts';
 
-export const getProducts = () => new Promise((resolve) => {
-  resolve(products);
-});
-
-export const getProductsList = async () => {
+export const getProductsList = async (event) => {
   let response;
 
-  try {
-    const list = await getProducts();
+  console.log('getProductsList');
+  console.log(event);
 
-    response = getResponse(RESPONSE_STATUSES.OK, list);
-  } catch {
+  try {
+    const result = await getAllProducts();
+
+    console.log('Result');
+    console.log(result);
+
+    response = getResponse(RESPONSE_STATUSES.OK, result.rows);
+  } catch (err) {
+    console.log(err);
+
     const error = ERRORS[ERROR_TYPES.DEFAULT];
 
     response = getResponse(error.code, error);

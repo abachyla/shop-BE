@@ -1,5 +1,7 @@
+import { Client } from 'pg';
 import { getProductsList } from '../handlers/getProductsList';
 import { RESPONSE_HEADERS, RESPONSE_STATUSES } from '../constants/response';
+import { ERROR_TYPES, ERRORS } from '../constants/error';
 
 const products = [{
   count: 5,
@@ -15,26 +17,38 @@ const products = [{
   title: 'Product 2',
 }];
 
-jest.mock('../mocks/products.json', () => products);
+jest.mock('pg', () => {
+  const client = {
+    connect: jest.fn(),
+    query: jest.fn(() => Promise.resolve({ rows: products })),
+    end: jest.fn(),
+  };
+  return { Client: jest.fn(() => client) };
+});
 
 describe('getProductsList', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should return a list of products', async () => {
-    const response = {
+    const expectedResponse = {
       headers: RESPONSE_HEADERS,
       statusCode: RESPONSE_STATUSES.OK,
       body: JSON.stringify(products),
     };
 
-    expect(await getProductsList()).toEqual(response);
+    expect(await getProductsList()).toEqual(expectedResponse);
   });
 
-  it('should return 500 error if any errors', async () => {
-    JSON.stringify = jest.fn().mockImplementationOnce(() => {
-      throw new Error();
-    });
+  it('should return 500 error with default message if an error was thrown', async () => {
+    const expectedResponse = {
+      headers: RESPONSE_HEADERS,
+      statusCode: RESPONSE_STATUSES.SERVER_ERROR,
+      body: JSON.stringify(ERRORS[ERROR_TYPES.DEFAULT]),
+    };
+    jest.spyOn(Client(), 'connect').mockImplementation(() => Promise.reject());
 
-    const response = await getProductsList();
-
-    expect(response.statusCode).toBe(RESPONSE_STATUSES.SERVER_ERROR);
+    expect(await getProductsList()).toEqual(expectedResponse);
   });
 });

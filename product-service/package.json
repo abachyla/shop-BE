@@ -10,8 +10,10 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.2",
+    "serverless-dotenv-plugin": "^4.0.1",
     "serverless-webpack": "^5.7.1",
-    "webpack": "^5.73.0"
+    "webpack": "^5.73.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
     "deploy": "sls deploy",
@@ -20,5 +22,9 @@
     "lint:fix": "eslint . --ext .js --fix"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.7.3",
+    "validate": "^5.2.0"
+  }
 }
