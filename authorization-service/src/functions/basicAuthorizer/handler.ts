@@ -1,4 +1,4 @@
-import { APIGatewayRequestAuthorizerEvent, APIGatewayTokenAuthorizerHandler, AuthResponse } from 'aws-lambda';
+import { APIGatewayTokenAuthorizerHandler, APIGatewayAuthorizerResult } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 
 enum Effect {
@@ -6,26 +6,24 @@ enum Effect {
   DENY = 'Deny',
 }
 
-const basicAuthorizer: APIGatewayTokenAuthorizerHandler = async (event: APIGatewayRequestAuthorizerEvent, _context, cb) => {
+const basicAuthorizer: APIGatewayTokenAuthorizerHandler = async (event) => {
   console.log('Basic Authorizer');
   console.log(event);
 
+  const {authorizationToken = '', methodArn} = event;
+
   if (event.type !== 'TOKEN') {
-    cb('Unauthorized');
+    return generatePolicy(authorizationToken, methodArn, Effect.DENY);
   }
 
   try {
-    const {authorizationToken = '', methodArn} = event;
     const userCreds = getUserCredentialsFromToken(authorizationToken);
-    const user = process.env[userCreds.username];
+    const password = process.env[userCreds.username];
+    const effect = password && password === userCreds.password ? Effect.ALLOW : Effect.DENY;
 
-    const effect = user && user === userCreds.password ? Effect.ALLOW : Effect.DENY;
-    const policy = generatePolicy(user.username, methodArn, effect);
-
-    cb(null, policy);
-
+    return generatePolicy(authorizationToken, methodArn, effect);
   } catch(error) {
-    cb(`Unauthorized: ${error.message}`);
+    return generatePolicy(authorizationToken, methodArn, Effect.DENY);
   }
 };
 
@@ -40,7 +38,7 @@ function getUserCredentialsFromToken(token: string) {
   }
 }
 
-function generatePolicy(principalId, resource, effect = Effect.ALLOW): AuthResponse {
+function generatePolicy(principalId, resource, effect = Effect.ALLOW): APIGatewayAuthorizerResult {
   return {
     principalId,
     policyDocument: {

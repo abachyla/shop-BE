@@ -21,6 +21,15 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions: { basicAuthorizer },
+  resources: {
+    Outputs: {
+      BasicAuthorizerArn: {
+        Value: {
+          "Fn::GetAtt": ["BasicAuthorizerLambdaFunction", "Arn"],
+        }
+      }
+    }
+  },
   package: { individually: true },
   custom: {
     esbuild: {

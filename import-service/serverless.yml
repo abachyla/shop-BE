@@ -51,6 +51,11 @@ functions:
           path: /import
           method: get
           cors: true
+          authorizer:
+            arn: ${cf:ab-shop-auth-service-${self:provider.stage}.BasicAuthorizerArn}
+            name: basicAuthorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization
           request:
             parameters:
               querystrings:
